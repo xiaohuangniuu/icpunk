@@ -105,199 +105,205 @@ export function useProvideState(): StateContext {
     }
 
     const purchaseToken = async function (tokenId: bigint): Promise<boolean> {
-        if (auth.icpunk === undefined) return false;
-        if (listed === null) return false;
+      if (auth.icpunk === undefined) return false;
+      if (listed === null) return false;
 
-        let listing = listed.find((x) => x.token_id === tokenId);
-        if (listing === undefined) return false;
+      let listing = listed.find((x) => x.token_id === tokenId);
+      if (listing === undefined) return false;
 
-        setShowPurchaseModal(true);
+      setShowPurchaseModal(true);
 
-        let prin = getCanisterIds();
+      let prin = getCanisterIds();
 
-        var request = new Request(prin.collect_url + '?from=' + authContext.principal?.toString() + '&amount=' + listing.price + '&token_id=' + tokenId.toString());
+      var request = new Request(
+        prin.collect_url +
+          "?from=" +
+          authContext.principal?.toString() +
+          "&amount=" +
+          listing.price +
+          "&token_id=" +
+          tokenId.toString()
+      );
 
-        try {
-            let resp = await fetch(request);
+      try {
+        let resp = await fetch(request);
 
-            if (resp.status !== 200) {
-                return false;
-            }
-
-            let account = await resp.text();
-
-            // fetch(request).then(function(response) {
-            //     // console.log(response);
-            // });
-
-            // let to = getCanisterIds().icpunks_wallet;
-
-            let txRequest = {
-                to: account,
-                amount: Number(listing.price),
-                args: {
-                    memo: 12345
-                },
-                memo: 54321
-            }
-
-            let result = await auth.wallet?.requestTransfer(txRequest);
-            console.log(result);
-
-            setShowPurchaseModal(false);
-        } catch (e) {
-            console.log(e.message);
+        if (resp.status !== 200) {
+          return false;
         }
 
-        return false;
-    }
+        let account = await resp.text();
+
+        // fetch(request).then(function(response) {
+        //     // console.log(response);
+        // });
+
+        // let to = getCanisterIds().icpunks_wallet;
+
+        let txRequest = {
+          to: account,
+          amount: Number(listing.price),
+          args: {
+            memo: 12345,
+          },
+          memo: 54321,
+        };
+
+        let result = await auth.wallet?.requestTransfer(txRequest);
+        console.log(result);
+
+        setShowPurchaseModal(false);
+      } catch (e) {
+        console.log(e);
+      }
+
+      return false;
+    };
 
     const setSortingOrder = function (asc: boolean): void {
-        // if (sortingOrder == asc) return;
-        if (listed === null) return;
+      // if (sortingOrder == asc) return;
+      if (listed === null) return;
 
-        let items: Listing_2[] = [...listed];
+      let items: Listing_2[] = [...listed];
 
-        items = items.sort((a, b) => (a.price > b.price ? 1 : -1));
+      items = items.sort((a, b) => (a.price > b.price ? 1 : -1));
 
-        if (!asc) {
-            items.reverse();
-        }
+      if (!asc) {
+        items.reverse();
+      }
 
-        // for (var i=0;i<listed.length;i++) {
-        //     items.push(listed[listed.length-1-i]);
-        // }
+      // for (var i=0;i<listed.length;i++) {
+      //     items.push(listed[listed.length-1-i]);
+      // }
 
-        setListed(items);
+      setListed(items);
 
-        setSortingOrder2(asc);
-    }
+      setSortingOrder2(asc);
+    };
 
     const addListed = function (listing: Listing_2): void {
-        if (listed === null) {
-            setListed([listing]);
-        } else {
-            listed.push(listing);
-            setListed(listed);
-        }
-    }
+      if (listed === null) {
+        setListed([listing]);
+      } else {
+        listed.push(listing);
+        setListed(listed);
+      }
+    };
 
     const removeListed = function (token_id: bigint): void {
-        if (listed === null) return;
+      if (listed === null) return;
 
-        let items = listed.filter((x) => {
-            return x.token_id !== token_id
-        });
+      let items = listed.filter((x) => {
+        return x.token_id !== token_id;
+      });
 
-        setListed(items);
-    }
+      setListed(items);
+    };
 
     const setPage = function (page: number): void {
-        return setListedPage(page);
-    }
+      return setListedPage(page);
+    };
 
     const setShowSend = function (show: boolean): void {
-        if (show && displayToken === null) return;
+      if (show && displayToken === null) return;
 
-        setShowSendModal(show);
-    }
+      setShowSendModal(show);
+    };
 
     const setShowList = function (show: boolean): void {
-        if (show && displayToken === null) return;
+      if (show && displayToken === null) return;
 
-        setShowListModal(show);
-    }
+      setShowListModal(show);
+    };
 
     const setShowPurchase = function (show: boolean): void {
-        if (show && displayToken === null) return;
+      if (show && displayToken === null) return;
 
-        setShowPurchaseModal(show);
-    }
+      setShowPurchaseModal(show);
+    };
 
     const setShowTransfer = function (show: boolean): void {
-        if (show && authContext.wallet === undefined) return;
+      if (show && authContext.wallet === undefined) return;
 
-        setShowTransferModal(show);
-    }
+      setShowTransferModal(show);
+    };
 
     const setDisplayedToken = async function (id: bigint): Promise<void> {
-        if (authContext.icpunk === undefined) return;
+      if (authContext.icpunk === undefined) return;
 
-        setDisplayToken(id);
-        setDisplayTokenData(null);
+      setDisplayToken(id);
+      setDisplayTokenData(null);
 
-        try {
-            let token = await authContext.icpunk?.data_of(id);
-            setDisplayTokenData(token);
-
-        } catch (e) {
-            console.log(e.message);
-        }
-    }
+      try {
+        let token = await authContext.icpunk?.data_of(id);
+        setDisplayTokenData(token);
+      } catch (e) {
+        console.log(e);
+      }
+    };
 
     const loadUserTokens = async function (): Promise<void> {
-        if (isLoading) return;
+      if (isLoading) return;
 
-        if (authContext.icpunk === undefined) return;
+      if (authContext.icpunk === undefined) return;
 
-        setLoading(true);
+      setLoading(true);
 
-        try {
-            let tokens = await authContext.icpunk?.user_tokens(authContext.principal as Principal);
-            setUserTokens(tokens);
-        } catch (e) {
-            console.log(e.message);
-        }
-        setLoading(false);
+      try {
+        let tokens = await authContext.icpunk?.user_tokens(
+          authContext.principal as Principal
+        );
+        setUserTokens(tokens);
+      } catch (e) {
+        console.log(e);
+      }
+      setLoading(false);
     };
 
     const loadListedPage = async function (): Promise<void> {
-        if (isLoading) return;
+      if (isLoading) return;
 
-        if (authContext.icpunk === undefined) return;
+      if (authContext.icpunk === undefined) return;
 
-        setLoading(true);
+      setLoading(true);
 
-        try {
-            let listed_count = await authContext.icpunk?.get_listed_count();
-            setListedCount(listed_count);
+      try {
+        let listed_count = await authContext.icpunk?.get_listed_count();
+        setListedCount(listed_count);
 
-            let pages = (Number(listed_count) / 10);
+        let pages = Number(listed_count) / 10;
 
-            if (Number(listed_count) % 10 > 0)
-                pages = pages + 1;
+        if (Number(listed_count) % 10 > 0) pages = pages + 1;
 
-            let calls: Promise<Listing_2[]>[] = [];
-            for (var i = 0; i < pages; i++) {
-                calls.push(authContext.icpunk?.get_listed(BigInt(i)));
-            }
-
-            let results = await Promise.all(calls);
-            let tokens = results.flat();
-
-
-            setListed(tokens);
-        } catch (e) {
-            console.log(e.message);
+        let calls: Promise<Listing_2[]>[] = [];
+        for (var i = 0; i < pages; i++) {
+          calls.push(authContext.icpunk?.get_listed(BigInt(i)));
         }
 
-        setLoading(false);
+        let results = await Promise.all(calls);
+        let tokens = results.flat();
+
+        setListed(tokens);
+      } catch (e) {
+        console.log(e);
+      }
+
+      setLoading(false);
     };
 
     const loadDisplayToken = async function (): Promise<void> {
-        if (displayToken === null) return;
-        if (authContext.icpunk === undefined) return;
+      if (displayToken === null) return;
+      if (authContext.icpunk === undefined) return;
 
-        try {
-            let token = await authContext.icpunk?.data_of(displayToken.valueOf());
-            if (displayToken === token.id) {
-                setDisplayTokenData(token);
-            }
-
-        } catch (e) {
-            console.log(e.message);
+      try {
+        let token = await authContext.icpunk?.data_of(displayToken.valueOf());
+        if (displayToken === token.id) {
+          setDisplayTokenData(token);
         }
-    }
+      } catch (e) {
+        console.log(e);
+      }
+    };
 
     //Load user tokens once wallet is connected
     //Load all marketplace listings

@@ -16,21 +16,24 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@dfinity/agent": "^0.8.9",
-    "@dfinity/auth-client": "^0.8.9",
-    "@dfinity/authentication": "^0.8.9",
-    "@dfinity/identity": "^0.8.9",
-    "bootstrap": "4.6.0",
-    "lodash.debounce": "^4.0.8",
-    "react": "^17.0.1",
-    "react-bootstrap": "^1.6.1",
-    "react-dom": "^17.0.1",
-    "react-lottie-player": "^1.3.1",
+    "@dfinity/agent": "^0.10.2",
+    "@dfinity/auth-client": "^0.10.2",
+    "@dfinity/authentication": "^0.10.2",
+    "@dfinity/candid": "^0.10.2",
+    "@dfinity/identity": "^0.10.2",
+    "@dfinity/principal": "^0.10.2",
+    "bootstrap": "^5.1.3",
+    "react": "^17.0.2",
+    "react-bootstrap": "^2.1.2",
+    "react-dom": "^17.0.2",
+    "react-lottie-player": "^1.4.1",
     "react-router-dom": "^5.2.0",
-    "react-transition-group": "^4.4.1",
-    "simple-cbor": "0.4.1"
+    "react-scripts": "^5.0.0",
+    "react-transition-group": "^4.4.2",
+    "simple-cbor": "^0.4.1"
   },
   "devDependencies": {
+    "@babel/node": "^7.14.8",
     "@craco/craco": "^6.0.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -49,11 +52,9 @@
     "node-sass": "^6.0.0",
     "node-webcrypto-ossl": "^2.1.2",
     "prettier": "^2.2.1",
-    "react-scripts": "^4.0.3",
     "style-loader": "^1.3.0",
     "terser-webpack-plugin": "^4.2.3",
-    "typescript": "^4.2.2",
-    "@babel/node": "^7.14.8"
+    "typescript": "^4.2.2"
   },
   "eslintConfig": {
     "extends": [
@@ -81,6 +82,5 @@
     "src/**/*.{ts,tsx,js,jsx,json,css,scss,md}": [
       "prettier --write"
     ]
-  },
-  "type": "module"
+  }
 }
